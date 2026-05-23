@@ -16,6 +16,18 @@ export function filterQuestions(
     filtered = [...filtered].sort(() => Math.random() - 0.5);
   }
 
+  if (settings.shuffleOptions) {
+    filtered = filtered.map((q) => {
+      const pairs = q.options.map((opt, i) => ({ opt, isCorrect: i === q.correct }));
+      const shuffled = [...pairs].sort(() => Math.random() - 0.5);
+      return {
+        ...q,
+        options: shuffled.map((p) => p.opt),
+        correct: shuffled.findIndex((p) => p.isCorrect),
+      };
+    });
+  }
+
   return filtered;
 }
 

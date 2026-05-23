@@ -23,6 +23,7 @@ export type QuizMode = "instant" | "review";
 export interface QuizSettings {
   mode: QuizMode;
   shuffle: boolean;
+  shuffleOptions: boolean;
   selectedLectures: string[]; // lecture ids; empty = all
 }
 

@@ -12,6 +12,7 @@ interface Props {
 export default function SetupScreen({ data, onStart, onChangeData }: Props) {
   const [mode, setMode] = useState<QuizMode>("instant");
   const [shuffle, setShuffle] = useState(false);
+  const [shuffleOptions, setShuffleOptions] = useState(false);
   const [selectedLectures, setSelectedLectures] = useState<string[]>([]);
 
   const allSelected = selectedLectures.length === 0;
@@ -104,28 +105,46 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
           </div>
         </div>
 
-        {/* Shuffle */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold text-gray-700">Shuffle Questions</p>
-            <p className="text-xs text-gray-400">Randomize question order</p>
+        {/* Shuffle toggles */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-700">Shuffle Questions</p>
+              <p className="text-xs text-gray-400">Randomize question order</p>
+            </div>
+            <button
+              onClick={() => setShuffle((s) => !s)}
+              className={`relative w-11 h-6 rounded-full transition-colors ${shuffle ? "bg-blue-500" : "bg-gray-200"}`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                  shuffle ? "translate-x-5" : ""
+                }`}
+              />
+            </button>
           </div>
-          <button
-            onClick={() => setShuffle((s) => !s)}
-            className={`relative w-11 h-6 rounded-full transition-colors ${shuffle ? "bg-blue-500" : "bg-gray-200"}`}
-          >
-            <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                shuffle ? "translate-x-5" : ""
-              }`}
-            />
-          </button>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-700">Shuffle Options</p>
+              <p className="text-xs text-gray-400">Randomize A / B / C / D order</p>
+            </div>
+            <button
+              onClick={() => setShuffleOptions((s) => !s)}
+              className={`relative w-11 h-6 rounded-full transition-colors ${shuffleOptions ? "bg-blue-500" : "bg-gray-200"}`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                  shuffleOptions ? "translate-x-5" : ""
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Start */}
         <button
           disabled={questionCount === 0}
-          onClick={() => onStart({ mode, shuffle, selectedLectures })}
+          onClick={() => onStart({ mode, shuffle, shuffleOptions, selectedLectures })}
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-3 rounded-xl transition-colors"
         >
           {questionCount === 0
