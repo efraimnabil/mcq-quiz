@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Question } from "@/types";
 
 interface Props {
@@ -13,6 +13,29 @@ export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
   const [index, setIndex] = useState(0);
   const [chosen, setChosen] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("mcq-quiz-session");
+      if (raw) {
+        const s = JSON.parse(raw);
+        const idx = Math.min(s.index ?? 0, questions.length - 1);
+        const ans = s.answers ?? {};
+        setIndex(idx);
+        setAnswers(ans);
+        setChosen(ans[questions[idx]?.id] ?? null);
+      }
+    } catch {}
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    try {
+      localStorage.setItem("mcq-quiz-session", JSON.stringify({ index, answers }));
+    } catch {}
+  }, [ready, index, answers]);
 
   const q = questions[index];
   const answered = chosen !== null;

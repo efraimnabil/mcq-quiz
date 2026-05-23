@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Question } from "@/types";
 
 interface Props {
@@ -12,6 +12,26 @@ interface Props {
 export default function ReviewQuiz({ questions, onFinish, onBack }: Props) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("mcq-quiz-session");
+      if (raw) {
+        const s = JSON.parse(raw);
+        setIndex(Math.min(s.index ?? 0, questions.length - 1));
+        if (s.answers) setAnswers(s.answers);
+      }
+    } catch {}
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    try {
+      localStorage.setItem("mcq-quiz-session", JSON.stringify({ index, answers }));
+    } catch {}
+  }, [ready, index, answers]);
 
   const q = questions[index];
   const chosen = answers[q.id] ?? null;
