@@ -6,10 +6,12 @@ interface Props {
   questions: Question[];
   answers: Record<number, number>;
   onRestart: () => void;
+  onRetry: (wrong: Question[]) => void;
 }
 
-export default function ResultsScreen({ questions, answers, onRestart }: Props) {
+export default function ResultsScreen({ questions, answers, onRestart, onRetry }: Props) {
   const score = questions.filter((q) => answers[q.id] === q.correct).length;
+  const wrong = questions.filter((q) => answers[q.id] !== q.correct);
   const pct = Math.round((score / questions.length) * 100);
 
   const grade =
@@ -87,13 +89,23 @@ export default function ResultsScreen({ questions, answers, onRestart }: Props) 
           );
         })}
 
-        {/* Back to setup */}
-        <button
-          onClick={onRestart}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors"
-        >
-          ↩ Back to Setup
-        </button>
+        {/* Actions */}
+        <div className="space-y-3">
+          {wrong.length > 0 && (
+            <button
+              onClick={() => onRetry(wrong)}
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 rounded-xl transition-colors"
+            >
+              🔁 Retry {wrong.length} wrong answer{wrong.length !== 1 ? "s" : ""}
+            </button>
+          )}
+          <button
+            onClick={onRestart}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors"
+          >
+            ↩ Back to Setup
+          </button>
+        </div>
 
       </div>
     </div>

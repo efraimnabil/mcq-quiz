@@ -63,6 +63,13 @@ export default function Home() {
     setPhase("results");
   }
 
+  function handleRetry(wrong: Question[]) {
+    setActiveQuestions(wrong);
+    setAnswers({});
+    try { localStorage.removeItem(SESSION_KEY); } catch {}
+    setPhase("quiz");
+  }
+
   function handleChangeData() {
     try {
       localStorage.removeItem(PROGRESS_KEY);
@@ -104,6 +111,7 @@ export default function Home() {
       questions={activeQuestions}
       answers={answers}
       onRestart={() => setPhase("setup")}
+      onRetry={handleRetry}
     />
   );
 }
