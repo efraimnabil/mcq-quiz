@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { QuizSettings, Question, QuizData } from "@/types";
 import { filterQuestions } from "@/lib/quiz";
 import LoadScreen from "@/components/LoadScreen";
@@ -13,6 +13,7 @@ type Phase = "load" | "setup" | "quiz" | "results";
 
 const PROGRESS_KEY = "mcq-progress";
 const SESSION_KEY = "mcq-quiz-session";
+const PHASE_ORDER: Phase[] = ["load", "setup", "quiz", "results"];
 
 export default function Home() {
   const [quizData, setQuizData] = useState<QuizData | null>(null);
@@ -21,6 +22,7 @@ export default function Home() {
   const [activeQuestions, setActiveQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [mounted, setMounted] = useState(false);
+  const skipNextPush = useRef(false);
 
   useEffect(() => {
     try {
@@ -37,12 +39,49 @@ export default function Home() {
     setMounted(true);
   }, []);
 
+  // Seed browser history so the phone/browser back button walks the phase
+  // chain (load → setup → quiz → results) instead of leaving the site.
+  useEffect(() => {
+    if (!mounted) return;
+    const idx = PHASE_ORDER.indexOf(phase);
+    skipNextPush.current = true;
+    window.history.replaceState({ phase: PHASE_ORDER[0] }, "");
+    for (let i = 1; i <= idx; i++) {
+      window.history.pushState({ phase: PHASE_ORDER[i] }, "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const onPopState = (e: PopStateEvent) => {
+      const next = (e.state?.phase as Phase) ?? "load";
+      skipNextPush.current = true;
+      setPhase(next);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [mounted]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    if (skipNextPush.current) {
+      skipNextPush.current = false;
+      return;
+    }
+    window.history.pushState({ phase }, "");
+  }, [phase, mounted]);
+
   useEffect(() => {
     if (!mounted) return;
     try {
       localStorage.setItem(PROGRESS_KEY, JSON.stringify({ phase, quizData, settings, activeQuestions, answers }));
     } catch {}
   }, [mounted, phase, quizData, settings, activeQuestions, answers]);
+
+  function goBack() {
+    window.history.back();
+  }
 
   function handleLoad(data: QuizData) {
     setQuizData(data);
@@ -79,6 +118,8 @@ export default function Home() {
     setSettings(null);
     setActiveQuestions([]);
     setAnswers({});
+    skipNextPush.current = true;
+    window.history.replaceState({ phase: "load" }, "");
     setPhase("load");
   }
 
@@ -101,9 +142,9 @@ export default function Home() {
 
   if (phase === "quiz" && settings) {
     if (settings.mode === "instant") {
-      return <InstantQuiz questions={activeQuestions} onFinish={handleFinish} onBack={() => setPhase("setup")} />;
+      return <InstantQuiz questions={activeQuestions} onFinish={handleFinish} onBack={goBack} />;
     }
-    return <ReviewQuiz questions={activeQuestions} onFinish={handleFinish} onBack={() => setPhase("setup")} />;
+    return <ReviewQuiz questions={activeQuestions} onFinish={handleFinish} onBack={goBack} />;
   }
 
   return (
