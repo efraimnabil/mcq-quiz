@@ -1,0 +1,102 @@
+{
+  "title": "Sample Course",
+  "lectures": [
+    { "id": "lec-1", "name": "Lecture 1: Introduction" },
+    { "id": "lec-2", "name": "Lecture 2: Core Concepts" },
+    { "id": "lec-3", "name": "Lecture 3: Advanced Topics" }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "lectureId": "lec-1",
+      "question": "What does CPU stand for?",
+      "options": [
+        "Central Processing Unit",
+        "Computer Personal Unit",
+        "Central Program Utility",
+        "Core Processing Unit"
+      ],
+      "correct": 0,
+      "explanation": "CPU stands for Central Processing Unit — the primary component of a computer that executes instructions."
+    },
+    {
+      "id": 2,
+      "lectureId": "lec-1",
+      "question": "Which of the following is a volatile memory?",
+      "options": ["Hard Disk", "SSD", "RAM", "ROM"],
+      "correct": 2,
+      "explanation": "RAM (Random Access Memory) is volatile — it loses its contents when power is removed."
+    },
+    {
+      "id": 3,
+      "lectureId": "lec-1",
+      "question": "What is the base of the binary number system?",
+      "options": ["8", "10", "16", "2"],
+      "correct": 3,
+      "explanation": "Binary uses base 2, meaning only digits 0 and 1 are used."
+    },
+    {
+      "id": 4,
+      "lectureId": "lec-2",
+      "question": "Which data structure operates on a LIFO principle?",
+      "options": ["Queue", "Stack", "Linked List", "Tree"],
+      "correct": 1,
+      "explanation": "A Stack operates on Last-In-First-Out (LIFO): the last element pushed is the first to be popped."
+    },
+    {
+      "id": 5,
+      "lectureId": "lec-2",
+      "question": "What is the time complexity of binary search?",
+      "options": ["O(n)", "O(n²)", "O(log n)", "O(1)"],
+      "correct": 2,
+      "explanation": "Binary search halves the search space each iteration, giving O(log n) time complexity."
+    },
+    {
+      "id": 6,
+      "lectureId": "lec-2",
+      "question": "Which sorting algorithm has the best average-case performance?",
+      "options": ["Bubble Sort", "Selection Sort", "Insertion Sort", "Quick Sort"],
+      "correct": 3,
+      "explanation": "Quick Sort has an average-case complexity of O(n log n), making it highly efficient in practice."
+    },
+    {
+      "id": 7,
+      "lectureId": "lec-3",
+      "question": "What does OOP stand for?",
+      "options": [
+        "Object-Oriented Programming",
+        "Open-Output Processing",
+        "Ordered Object Protocol",
+        "Offline Output Program"
+      ],
+      "correct": 0,
+      "explanation": "OOP stands for Object-Oriented Programming — a paradigm based on classes and objects."
+    },
+    {
+      "id": 8,
+      "lectureId": "lec-3",
+      "question": "Which principle ensures a class has only one reason to change?",
+      "options": [
+        "Open/Closed Principle",
+        "Single Responsibility Principle",
+        "Liskov Substitution Principle",
+        "Interface Segregation Principle"
+      ],
+      "correct": 1,
+      "explanation": "The Single Responsibility Principle (SRP) states that a class should have only one reason to change."
+    },
+    {
+      "id": 9,
+      "lectureId": "lec-3",
+      "question": "What is a closure in programming?",
+      "options": [
+        "A function with no parameters",
+        "A loop that never ends",
+        "A function that captures variables from its enclosing scope",
+        "A way to close a file handle"
+      ],
+      "correct": 2,
+      "explanation": "A closure is a function that retains access to variables from its lexical scope even after the outer function returns."
+    }
+  ]
+}
