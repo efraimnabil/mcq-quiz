@@ -30,14 +30,14 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <main className="flex-1">{children}</main>
-        <footer className="fixed bottom-0 left-0 right-0 text-center py-3 text-xs text-gray-400 pointer-events-none">
+        <footer className="text-center py-3 text-xs text-gray-400">
           Made with{" "}
           <span className="text-red-400">♥</span>{" "}
           <a
             href="https://www.linkedin.com/in/efraimnabil"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-gray-500 hover:text-blue-600 transition-colors pointer-events-auto"
+            className="font-medium text-gray-500 hover:text-blue-600 transition-colors"
           >
             Efraim Nabil
           </a>
