@@ -102,3 +102,7 @@ src/
 - [Next.js](https://nextjs.org) 15 (App Router)
 - [TypeScript](https://www.typescriptlang.org)
 - [Tailwind CSS](https://tailwindcss.com)
+
+---
+
+> © 2026 [Efraim Nabil](https://www.linkedin.com/in/efraimnabil) — All rights reserved.

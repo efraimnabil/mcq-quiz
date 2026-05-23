@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MCQ Quiz",
   description: "Study with multiple-choice questions from your lecture notes",
+  icons: { icon: "/logo.svg" },
 };
 
 export default function RootLayout({
@@ -27,7 +28,20 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <main className="flex-1">{children}</main>
+        <footer className="text-center py-4 text-xs text-gray-400">
+          © 2026{" "}
+          <a
+            href="https://www.linkedin.com/in/efraimnabil"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-gray-500 hover:text-blue-600 transition-colors"
+          >
+            Efraim Nabil
+          </a>
+        </footer>
+      </body>
     </html>
   );
 }

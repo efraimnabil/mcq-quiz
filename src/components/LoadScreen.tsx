@@ -98,9 +98,12 @@ export default function LoadScreen({ onLoad }: Props) {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 w-full max-w-lg p-8 space-y-6">
 
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">MCQ Quiz</h1>
-          <p className="text-gray-500 mt-1 text-sm">Load your questions to get started</p>
+        <div className="flex items-center gap-3">
+          <img src="/logo.svg" alt="MCQ Quiz" className="w-11 h-11 shrink-0" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">MCQ Quiz</h1>
+            <p className="text-gray-500 mt-1 text-sm">Load your questions to get started</p>
+          </div>
         </div>
 
         {/* Tabs */}
