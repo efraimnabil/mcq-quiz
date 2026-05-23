@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { QuizData, QuizSettings, QuizMode } from "@/types";
+import { encodeQuiz } from "@/lib/share";
 
 interface Props {
   data: QuizData;
@@ -14,8 +15,23 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
   const [shuffle, setShuffle] = useState(false);
   const [shuffleOptions, setShuffleOptions] = useState(false);
   const [selectedLectures, setSelectedLectures] = useState<string[]>([]);
+  const [shareLabel, setShareLabel] = useState<"share" | "copied" | "error">("share");
 
   const allSelected = selectedLectures.length === 0;
+
+  async function handleShare() {
+    try {
+      const token = await encodeQuiz(data);
+      const url = `${window.location.origin}${window.location.pathname}#q=${token}`;
+      await navigator.clipboard.writeText(url);
+      setShareLabel("copied");
+      setTimeout(() => setShareLabel("share"), 2000);
+    } catch (e) {
+      console.error("Failed to create share link:", e);
+      setShareLabel("error");
+      setTimeout(() => setShareLabel("share"), 2000);
+    }
+  }
 
   function toggleLecture(id: string) {
     setSelectedLectures((prev) =>
@@ -40,12 +56,24 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
               {data.questions.length} questions · {data.lectures.length} lectures
             </p>
           </div>
-          <button
-            onClick={onChangeData}
-            className="shrink-0 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors pt-1"
-          >
-            Change ↗
-          </button>
+          <div className="shrink-0 flex flex-col items-end gap-1 pt-1">
+            <button
+              onClick={handleShare}
+              className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
+            >
+              {shareLabel === "copied"
+                ? "Copied! ✓"
+                : shareLabel === "error"
+                ? "Failed"
+                : "Share ↗"}
+            </button>
+            <button
+              onClick={onChangeData}
+              className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
+            >
+              Change ↗
+            </button>
+          </div>
         </div>
 
         {/* Mode */}

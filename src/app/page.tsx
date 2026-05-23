@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import type { QuizSettings, Question, QuizData } from "@/types";
 import { filterQuestions } from "@/lib/quiz";
+import { decodeQuiz } from "@/lib/share";
 import LoadScreen from "@/components/LoadScreen";
 import SetupScreen from "@/components/SetupScreen";
 import InstantQuiz from "@/components/InstantQuiz";
@@ -25,18 +26,45 @@ export default function Home() {
   const skipNextPush = useRef(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(PROGRESS_KEY);
-      if (raw) {
-        const s = JSON.parse(raw);
-        if (s.quizData) setQuizData(s.quizData);
-        if (s.phase) setPhase(s.phase);
-        if (s.settings) setSettings(s.settings);
-        if (s.activeQuestions?.length) setActiveQuestions(s.activeQuestions);
-        if (s.answers) setAnswers(s.answers);
+    let cancelled = false;
+    (async () => {
+      const hash = window.location.hash;
+      if (hash.startsWith("#q=")) {
+        try {
+          const data = await decodeQuiz(hash.slice(3));
+          if (cancelled) return;
+          try {
+            localStorage.removeItem(PROGRESS_KEY);
+            localStorage.removeItem(SESSION_KEY);
+          } catch {}
+          window.history.replaceState(null, "", window.location.pathname);
+          setQuizData(data);
+          setPhase("setup");
+          setMounted(true);
+          return;
+        } catch (e) {
+          console.error("Failed to load shared quiz:", e);
+          try {
+            window.history.replaceState(null, "", window.location.pathname);
+          } catch {}
+        }
       }
-    } catch {}
-    setMounted(true);
+      try {
+        const raw = localStorage.getItem(PROGRESS_KEY);
+        if (raw) {
+          const s = JSON.parse(raw);
+          if (s.quizData) setQuizData(s.quizData);
+          if (s.phase) setPhase(s.phase);
+          if (s.settings) setSettings(s.settings);
+          if (s.activeQuestions?.length) setActiveQuestions(s.activeQuestions);
+          if (s.answers) setAnswers(s.answers);
+        }
+      } catch {}
+      if (!cancelled) setMounted(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Seed browser history so the phone/browser back button walks the phase
