@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { QuizData } from "@/types";
+import { useLang } from "@/i18n";
 
 const AI_PROMPT = `Convert the questions from this PDF into the following JSON format. Return only valid JSON, no extra text.
 
@@ -42,6 +43,7 @@ function parseAndValidate(text: string): QuizData {
 }
 
 export default function LoadScreen({ onLoad }: Props) {
+  const { t } = useLang();
   const [tab, setTab] = useState<"file" | "paste">("file");
   const [pasteText, setPasteText] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -101,24 +103,24 @@ export default function LoadScreen({ onLoad }: Props) {
         <div className="flex items-center gap-3">
           <img src="/logo.svg" alt="MCQ Quiz" className="w-11 h-11 shrink-0" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">MCQ Quiz</h1>
-            <p className="text-gray-500 mt-1 text-sm">Load your questions to get started</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t.appTitle}</h1>
+            <p className="text-gray-500 mt-1 text-sm">{t.appSubtitle}</p>
           </div>
         </div>
 
         {/* Tabs */}
         <div className="flex rounded-xl border border-gray-200 p-1 gap-1">
-          {(["file", "paste"] as const).map((t) => (
+          {(["file", "paste"] as const).map((tabKey) => (
             <button
-              key={t}
-              onClick={() => { setTab(t); setError(null); }}
+              key={tabKey}
+              onClick={() => { setTab(tabKey); setError(null); }}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                tab === t
+                tab === tabKey
                   ? "bg-blue-600 text-white shadow-sm"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              {t === "file" ? "Upload File" : "Paste JSON"}
+              {tabKey === "file" ? t.uploadFile : t.pasteJSON}
             </button>
           ))}
         </div>
@@ -138,9 +140,11 @@ export default function LoadScreen({ onLoad }: Props) {
           >
             <p className="text-3xl mb-3">📂</p>
             <p className="text-sm font-medium text-gray-700">
-              Drop your <code className="bg-gray-100 px-1 rounded text-xs">.json</code> file here
+              {t.dropFile.split(".json")[0]}
+              <code className="bg-gray-100 px-1 rounded text-xs">.json</code>
+              {t.dropFile.includes(".json") ? t.dropFile.split(".json")[1] : ""}
             </p>
-            <p className="text-xs text-gray-400 mt-1">or click to browse</p>
+            <p className="text-xs text-gray-400 mt-1">{t.orClickToBrowse}</p>
             <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleFileInput} />
           </div>
         )}
@@ -151,7 +155,7 @@ export default function LoadScreen({ onLoad }: Props) {
             <textarea
               value={pasteText}
               onChange={(e) => setPasteText(e.target.value)}
-              placeholder='Paste your JSON here…'
+              placeholder={t.pasteHere}
               rows={10}
               className="w-full border border-gray-200 rounded-xl p-4 text-xs font-mono text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             />
@@ -160,7 +164,7 @@ export default function LoadScreen({ onLoad }: Props) {
               disabled={!pasteText.trim()}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-3 rounded-xl transition-colors"
             >
-              Load Questions
+              {t.loadQuestions}
             </button>
           </div>
         )}
@@ -168,7 +172,7 @@ export default function LoadScreen({ onLoad }: Props) {
         {/* Error */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">
-            <strong>Invalid JSON:</strong> {error}
+            <strong>{t.invalidJSON}</strong> {error}
           </div>
         )}
 
@@ -179,15 +183,15 @@ export default function LoadScreen({ onLoad }: Props) {
             className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 transition-colors"
           >
             <span>{showPrompt ? "▾" : "▸"}</span>
-            How to generate JSON from a PDF
+            {t.howToGenerate}
           </button>
 
           {showPrompt && (
             <div className="mt-4 space-y-3 text-sm text-gray-700">
               <p>
-                Send your PDF to any AI (ChatGPT, Claude, Gemini…) with the prompt below,
-                then paste or save the result as a{" "}
-                <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">.json</code> file.
+                {t.aiGuideText.split(".json")[0]}
+                <code className="bg-gray-100 px-1 py-0.5 rounded text-xs">.json</code>
+                {t.aiGuideText.includes(".json") ? t.aiGuideText.split(".json")[1] : ""}
               </p>
               <div className="bg-gray-900 rounded-xl p-4 relative">
                 <pre className="text-green-400 text-xs leading-relaxed whitespace-pre-wrap overflow-x-auto">
@@ -197,12 +201,12 @@ export default function LoadScreen({ onLoad }: Props) {
                   onClick={copyPrompt}
                   className="absolute top-3 right-3 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 px-2 py-1 rounded transition-colors"
                 >
-                  {copied ? "Copied!" : "Copy"}
+                  {copied ? t.copied : t.copy}
                 </button>
               </div>
               <details>
                 <summary className="cursor-pointer text-gray-500 hover:text-gray-700 text-xs font-medium">
-                  View JSON schema
+                  {t.viewSchema}
                 </summary>
                 <pre className="mt-2 bg-gray-50 border border-gray-200 rounded-xl p-4 text-xs text-gray-700 overflow-x-auto">{`{
   "title": string,

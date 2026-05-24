@@ -24,3 +24,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+[dir="rtl"] {
+  font-family: var(--font-cairo), Arial, sans-serif;
+}

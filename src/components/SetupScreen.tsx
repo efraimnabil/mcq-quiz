@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { QuizData, QuizSettings, QuizMode } from "@/types";
 import { encodeQuiz } from "@/lib/share";
+import { useLang } from "@/i18n";
 
 interface Props {
   data: QuizData;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function SetupScreen({ data, onStart, onChangeData }: Props) {
+  const { t } = useLang();
   const [mode, setMode] = useState<QuizMode>("instant");
   const [shuffle, setShuffle] = useState(false);
   const [shuffleOptions, setShuffleOptions] = useState(false);
@@ -53,7 +55,7 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{data.title}</h1>
             <p className="text-gray-500 mt-1 text-sm">
-              {data.questions.length} questions · {data.lectures.length} lectures
+              {t.questionsLectures(data.questions.length, data.lectures.length)}
             </p>
           </div>
           <div className="shrink-0 flex flex-col items-end gap-1 pt-1">
@@ -62,23 +64,23 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
               className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
             >
               {shareLabel === "copied"
-                ? "Copied! ✓"
+                ? t.copiedLink
                 : shareLabel === "error"
-                ? "Failed"
-                : "Share ↗"}
+                ? t.failed
+                : t.share}
             </button>
             <button
               onClick={onChangeData}
               className="text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors"
             >
-              Change ↗
+              {t.change}
             </button>
           </div>
         </div>
 
         {/* Mode */}
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Quiz Mode</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{t.quizMode}</p>
           <div className="grid grid-cols-2 gap-3">
             {(["instant", "review"] as QuizMode[]).map((m) => (
               <button
@@ -90,7 +92,7 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
                     : "border-gray-200 text-gray-600 hover:border-gray-300"
                 }`}
               >
-                {m === "instant" ? "⚡ Instant Feedback" : "📋 End-of-Quiz Review"}
+                {m === "instant" ? t.instantFeedback : t.endOfQuizReview}
               </button>
             ))}
           </div>
@@ -98,7 +100,7 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
 
         {/* Lectures */}
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Filter by Lecture</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{t.filterByLecture}</p>
           <div className="space-y-2">
             <button
               onClick={() => setSelectedLectures([])}
@@ -108,7 +110,7 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
                   : "border-gray-200 text-gray-700 hover:border-gray-300"
               }`}
             >
-              All Lectures
+              {t.allLectures}
             </button>
             {data.lectures.map((lec) => {
               const count = data.questions.filter((q) => q.lectureId === lec.id).length;
@@ -123,7 +125,7 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
                       : "border-gray-200 text-gray-700 hover:border-gray-300"
                   }`}
                 >
-                  <span>{lec.name}</span>
+                  <span dir="auto">{lec.name}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${selected ? "bg-blue-100" : "bg-gray-100"}`}>
                     {count}
                   </span>
@@ -137,8 +139,8 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-gray-700">Shuffle Questions</p>
-              <p className="text-xs text-gray-400">Randomize question order</p>
+              <p className="text-sm font-semibold text-gray-700">{t.shuffleQuestions}</p>
+              <p className="text-xs text-gray-400">{t.shuffleQuestionsDesc}</p>
             </div>
             <button
               onClick={() => setShuffle((s) => !s)}
@@ -153,8 +155,8 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-gray-700">Shuffle Options</p>
-              <p className="text-xs text-gray-400">Randomize A / B / C / D order</p>
+              <p className="text-sm font-semibold text-gray-700">{t.shuffleOptions}</p>
+              <p className="text-xs text-gray-400">{t.shuffleOptionsDesc}</p>
             </div>
             <button
               onClick={() => setShuffleOptions((s) => !s)}
@@ -175,9 +177,7 @@ export default function SetupScreen({ data, onStart, onChangeData }: Props) {
           onClick={() => onStart({ mode, shuffle, shuffleOptions, selectedLectures })}
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold py-3 rounded-xl transition-colors"
         >
-          {questionCount === 0
-            ? "No questions in selection"
-            : `Start Quiz — ${questionCount} Questions`}
+          {questionCount === 0 ? t.noQuestions : t.startQuiz(questionCount)}
         </button>
       </div>
     </div>

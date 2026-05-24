@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { Question } from "@/types";
+import { useLang } from "@/i18n";
 
 interface Props {
   questions: Question[];
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
+  const { t } = useLang();
   const [index, setIndex] = useState(0);
   const [chosen, setChosen] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -72,14 +74,14 @@ export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
         <div className="space-y-1">
           <div className="flex justify-between text-sm text-gray-500">
             <button onClick={onBack} className="flex items-center gap-1 text-gray-400 hover:text-gray-700 transition-colors text-xs font-medium">
-              ← Back
+              {t.back}
             </button>
             <span className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">
               {questions[index].lectureId}
             </span>
           </div>
           <div className="flex justify-between text-sm text-gray-500 mt-1">
-            <span>Question {index + 1} of {questions.length}</span>
+            <span>{t.questionOf(index + 1, questions.length)}</span>
           </div>
           <div className="w-full bg-gray-100 rounded-full h-1.5">
             <div
@@ -90,7 +92,7 @@ export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
         </div>
 
         {/* Question */}
-        <p className="text-lg font-semibold text-gray-900 leading-snug">{q.question}</p>
+        <p dir="auto" className="text-lg font-semibold text-gray-900 leading-snug">{q.question}</p>
 
         {/* Options */}
         <div className="space-y-3">
@@ -104,7 +106,7 @@ export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
                 <span className="w-6 h-6 rounded-full border border-current flex items-center justify-center text-xs shrink-0">
                   {String.fromCharCode(65 + i)}
                 </span>
-                {opt}
+                <span dir="auto">{opt}</span>
               </span>
             </button>
           ))}
@@ -113,8 +115,8 @@ export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
         {/* Explanation */}
         {answered && q.explanation && (
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-            <span className="font-semibold">Explanation: </span>
-            {q.explanation}
+            <span className="font-semibold">{t.explanation} </span>
+            <span dir="auto">{q.explanation}</span>
           </div>
         )}
 
@@ -125,7 +127,7 @@ export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
               chosen === q.correct ? "text-green-600" : "text-red-600"
             }`}
           >
-            {chosen === q.correct ? "✓ Correct!" : `✗ Incorrect — correct answer: ${q.options[q.correct]}`}
+            {chosen === q.correct ? t.correct : t.incorrect(q.options[q.correct])}
           </div>
         )}
 
@@ -135,7 +137,7 @@ export default function InstantQuiz({ questions, onFinish, onBack }: Props) {
             onClick={handleNext}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors"
           >
-            {isLast ? "See Results" : "Next Question →"}
+            {isLast ? t.seeResults : t.nextQuestion}
           </button>
         )}
       </div>
