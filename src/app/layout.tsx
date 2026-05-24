@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cairo } from "next/font/google";
 import { LanguageProvider } from "@/i18n";
 import HtmlDirSync from "@/i18n/HtmlDirSync";
-import LanguageSwitcher from "@/i18n/LanguageSwitcher";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,21 +40,19 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <LanguageProvider>
           <HtmlDirSync />
+          <Navbar />
           <main className="flex-1">{children}</main>
-          <footer className="text-center py-3 text-xs text-gray-400 flex items-center justify-center gap-3">
-            <span>
-              Made with{" "}
-              <span className="text-red-400">♥</span>{" "}
-              <a
-                href="https://www.linkedin.com/in/efraimnabil"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-gray-500 hover:text-blue-600 transition-colors"
-              >
-                Efraim Nabil
-              </a>
-            </span>
-            <LanguageSwitcher />
+          <footer className="text-center py-3 text-xs text-gray-400">
+            Made with{" "}
+            <span className="text-red-400">♥</span>{" "}
+            <a
+              href="https://www.linkedin.com/in/efraimnabil"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-gray-500 hover:text-blue-600 transition-colors"
+            >
+              Efraim Nabil
+            </a>
           </footer>
         </LanguageProvider>
       </body>
