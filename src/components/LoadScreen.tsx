@@ -49,7 +49,7 @@ export default function LoadScreen({ onLoad }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function handleFile(file: File) {
